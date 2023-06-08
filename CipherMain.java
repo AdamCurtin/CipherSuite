@@ -3,74 +3,82 @@
 // Purpose: Entry point. Prompts user for input text and a shift amount, 
 // then creates instances of encoder and decoder classes to perform said operations.
 
-
-/*
- * Other Encryption Options:
- * Substitution Cipher
- * Vigenere Cipher
- * Transposition Cipher
- * RSa Encryption
- */
 package caesarcipherencoder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class CipherMain {
-	 public static void main(String[] args) {
-		 String inputText;
-	     int shiftAmount;
-	     
-	     if (args.length == 2) {
-	    	 // Use command line arguments for input file and shift amount
-	    	 inputText = CipherUtility.readFromFile(args[0]);
-	    	 shiftAmount = Integer.parseInt(args[1]);
-	     } else {
-	    	 // prompt the user for input text and shift amount
-	    	 inputText = CipherUtility.getInputText();
-	    	 shiftAmount = CipherUtility.getShiftAmount();
-	     } // end if else
-	        
-	      
-         Encoder encoder = new Encoder();
-         String encodedText = encoder.encodeText(inputText, shiftAmount);
-         System.out.println("Encoded text: " + encodedText);
+    public static void main(String[] args) {
+        // Introduction and menu
+    	CipherUtility.introduction();
+    	
 
-         Decoder decoder = new Decoder();
-         String decodedText = decoder.decodeText(encodedText, shiftAmount);
-         System.out.println("Decoded text: " + decodedText);
+        // Get user's cipher type choice
+        Scanner scanner = new Scanner(System.in);
+        CipherType cipherType = null;
+        boolean validChoice = false;
         
-      // Prompt the user to print the encoded text to a file
-         boolean printToFile = CipherUtility.getPrintToFileChoice();
-         if (printToFile) {
-             String outputFileName = CipherUtility.getOutputFileName(); // Prompt for output file name
-             CipherUtility.writeToFile(encodedText, outputFileName);
-             System.out.println("Encoded text written to file: " + outputFileName); // Print the output file name
-         } else {
-             System.out.println("Encoded text will not be printed to a file.");
-         } // end if else
-         
-         
-         
-//         // write encoded text to a file
-//         String outputFileName = CipherUtility.getOutputFileName(); // Prompt for output file name
-//         CipherUtility.writeToFile(encodedText, outputFileName);
-//         System.out.println("Encoded text written to file: " + outputFileName); // Print the output file name
-	} // end main method
-
+        // Prompt until a valid choice is entered
+        while (!validChoice) {
+        	CipherUtility.userEntry();
+	        String choice = scanner.nextLine();
 	
-	   
+	        // Set cipher type based on user's choice
+	        switch (choice) {
+	            case "1":
+	                cipherType = CipherType.CAESAR;
+	                validChoice = true;
+	                break;
+	            case "2":
+	                cipherType = CipherType.SUBSTITUTION;
+	                validChoice = true;
+	                break;
+	            case "3":
+	                cipherType = CipherType.TRANSPOSITION;
+	                validChoice = true;
+	                break;
+	            case "4":
+	            	CipherUtility.moreInformation();
+	            	 System.out.println("Press any key to return to the main menu...");
+	                 scanner.nextLine(); // Wait for user to press any key
+	                 System.out.println("Returning to main menu...");
+	                 System.out.println();
+	            	break;
+	            case "5":
+	            	System.out.println("Quitting the program...");
+	            	return; 
+	            default:
+	                System.out.println("Invalid choice. Please select a valid cipher type:");
+	        } // end switch case
+        } // end while loop
 
-	   
-	   
-	    
-	   
-	   
-	    
-	
-} // end CipherMain Class
+        // Get user input
+        String inputText = CipherUtility.getInputText();
+        int shiftAmount = 0; // Initialize shift amount for Caesar cipher
+        String outputFileName = CipherUtility.getOutputFileName();
+        boolean printToFile = CipherUtility.getPrintToFileChoice();
 
+        if (cipherType == CipherType.CAESAR) {
+            shiftAmount = CipherUtility.getShiftAmount();
+        }
 
+        // Encode the input text
+        Encoder encoder = new Encoder();
+        String encodedText = encoder.encodeText(inputText, shiftAmount, cipherType);
+
+        // Decode the encoded text
+        Decoder decoder = new Decoder();
+        String decodedText = decoder.decodeText(encodedText, shiftAmount, cipherType);
+
+        // Print the results
+        System.out.println("Encoded Text: " + encodedText);
+        System.out.println("Decoded Text: " + decodedText);
+
+        // Write the encoded text to a file if requested
+        if (printToFile) {
+            CipherUtility.writeToFile(encodedText, outputFileName);
+            System.out.println("Encoded text written to file: " + outputFileName);
+        }
+    }
+}
 

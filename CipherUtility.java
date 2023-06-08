@@ -91,48 +91,42 @@ public class CipherUtility {
 		    return choice.equals("y") || choice.equals("yes");
 	} // end getPrintToFileChoice
 	
-	
-	// Substitution Encoding and decoding methods
-	public static String substitutionEncode(String input) {
-	       // Define your substitution cipher mapping
-	       // For example, let's use a simple letter shift of 3
-	       String substitutionMap = "defghijklmnopqrstuvwxyzabc";
+	// begin sub cipher methods
+	// substitution encode
+	public static String substitutionEncode(String input, String substitutionMap) {
+	    StringBuilder encodedText = new StringBuilder();
+	    for (char c : input.toCharArray()) {
+	        if (Character.isLetter(c)) {
+	            char base = Character.isUpperCase(c) ? 'A' : 'a';
+	            int index = c - base;
+	            char encodedChar = substitutionMap.charAt(index);
+	            encodedText.append(encodedChar);
+	        } else {
+	            encodedText.append(c);
+	        }
+	    }
+	    return encodedText.toString();
+	}
 
-	       StringBuilder encodedText = new StringBuilder();
-	       for (char c : input.toCharArray()) {
-	           if (Character.isLetter(c)) {
-	               char base = Character.isUpperCase(c) ? 'A' : 'a';
-	               int index = c - base;
-	               char encodedChar = substitutionMap.charAt(index);
-	               encodedText.append(encodedChar);
-	           } else {
-	               encodedText.append(c);
-	           }
-	       }
-	       return encodedText.toString();
-	   } // end subEncode Method
-	 
+	public static String substitutionDecode(String input, String substitutionMap) {
+	    String reverseSubstitutionMap = "abcdefghijklmnopqrstuvwxyz";
+	    StringBuilder decodedText = new StringBuilder();
+	    for (char c : input.toCharArray()) {
+	        if (Character.isLetter(c)) {
+	            char base = Character.isUpperCase(c) ? 'A' : 'a';
+	            int index = substitutionMap.indexOf(Character.toLowerCase(c));
+	            char decodedChar = reverseSubstitutionMap.charAt(index);
+	            if (Character.isUpperCase(c)) {
+	                decodedChar = Character.toUpperCase(decodedChar);
+	            }
+	            decodedText.append(decodedChar);
+	        } else {
+	            decodedText.append(c);
+	        }
+	    }
+	    return decodedText.toString();
+	}
 
-	   public static String substitutionDecode(String input) {
-	       String substitutionMap = "defghijklmnopqrstuvwxyzabc";
-	       String reverseSubstitutionMap = "abcdefghijklmnopqrstuvwxyz";
-
-	       StringBuilder decodedText = new StringBuilder();
-	       for (char c : input.toCharArray()) {
-	           if (Character.isLetter(c)) {
-	               char base = Character.isUpperCase(c) ? 'A' : 'a';
-	               int index = substitutionMap.indexOf(Character.toLowerCase(c));
-	               char decodedChar = reverseSubstitutionMap.charAt(index);
-	               if (Character.isUpperCase(c)) {
-	                   decodedChar = Character.toUpperCase(decodedChar);
-	               }
-	               decodedText.append(decodedChar);
-	           } else {
-	               decodedText.append(c);
-	           }
-	       }
-	       return decodedText.toString();
-	   } // end substitutionDecode Method
 	   
 	   
 	   // Begin Transposition Coding methods
@@ -196,64 +190,45 @@ public class CipherUtility {
 
 	        return decodedText.toString();
 	    } // end transposition Decode method
-	    
-	    // Begin Vigenere Cipher Methods
-	    // Encode text using Vigenère Cipher
-	    public static String vigenereEncode(String input, String key) {
-	        StringBuilder encodedText = new StringBuilder();
-	        int inputLength = input.length();
-	        int keyLength = key.length();
 
-	        for (int i = 0; i < inputLength; i++) {
-	            char inputChar = input.charAt(i);
-	            char keyChar = key.charAt(i % keyLength); // Repeating the key if it's shorter than the input
+	    public static void introduction() {
+	    	System.out.println("Welcome to the Cipher Encoder!");
+	    	System.out.println("This program will showcase a few basic encoding techniques: ");
+	    	System.out.println("\t\tThe Caesar Cipher: \nShifts the letters in your message in an amount chosen by you.\n");
+	    	System.out.println("\t\tThe Substitution Cipher: \nUses a random or preset key to encode your message.\n");
+	    	System.out.println("\t\tThe Transposition Cipher: \nReaarranges the characters of you message in a grid-like fashion\n");
+	    	System.out.println("For more information on these, select more information from the choices below.");
+	    	System.out.println("");
+	    	
+	    } // end introduction
 
-	            if (Character.isLetter(inputChar)) {
-	                char base = Character.isUpperCase(inputChar) ? 'A' : 'a';
-	                int inputIndex = inputChar - base;
-	                int keyIndex = keyChar - base;
+		public static void userEntry() {
+			System.out.println("Please select a cipher type:");
+	        System.out.println("1. Caesar Cipher");
+	        System.out.println("2. Substitution Cipher");
+	        System.out.println("3. Transposition Cipher");
+	        System.out.println("4. More Information");
+	        System.out.println("5. Quit the program");
+		}
+		
+		public static void moreInformation() {
+			System.out.println("\nCipher Descriptions:");
+		    System.out.println("   Caesar Cipher: Shifts the letters in your message by a specified amount.");
+		    System.out.println("   Example: If the shift amount is 1, 'A' becomes 'B', 'B' becomes 'C', and so on.");
+		    System.out.println("   Decoding is done by shifting the letters in the opposite direction.");
+		    System.out.println();
+		    
+		    System.out.println("   Substitution Cipher: Uses a random or preset key to encode your message.");
+		    System.out.println("   Example: If the key is 'DEFGHIJKLMNOPQRSTUVWXYZABC', 'A' becomes 'D', 'B' becomes 'E', and so on.");
+		    System.out.println("   Decoding is done by using the reverse mapping of the key.");
+		    System.out.println();
+		    
+		    System.out.println("   Transposition Cipher: Rearranges the characters of your message in a grid-like fashion.");
+		    System.out.println("   Example: If the message is 'HELLO WORLD', it could be rearranged as 'HRELO LLWOD'.");
+		    System.out.println("   Decoding is done by reversing the grid-like arrangement.");
 
-	                char encodedChar = (char) ((inputIndex + keyIndex) % 26 + base);
-	                encodedText.append(encodedChar);
-	            } else {
-	                encodedText.append(inputChar);
-	            }
-	        }
-
-	        return encodedText.toString();
-	    } // end encode
-
-	    // Decode text using Vigenère Cipher
-	    public static String vigenereDecode(String input, String key) {
-	        StringBuilder decodedText = new StringBuilder();
-	        int inputLength = input.length();
-	        int keyLength = key.length();
-
-	        for (int i = 0; i < inputLength; i++) {
-	            char inputChar = input.charAt(i);
-	            char keyChar = key.charAt(i % keyLength); // Repeating the key if it's shorter than the input
-
-	            if (Character.isLetter(inputChar)) {
-	                char base = Character.isUpperCase(inputChar) ? 'A' : 'a';
-	                int inputIndex = inputChar - base;
-	                int keyIndex = keyChar - base;
-
-	                char decodedChar = (char) ((inputIndex - keyIndex + 26) % 26 + base);
-	                decodedText.append(decodedChar);
-	            } else {
-	                decodedText.append(inputChar);
-	            }
-	        }
-
-	        return decodedText.toString();
-	    } // end decode method
-	
-	
-	
-	
-	
-	
-	
-	
+		    System.out.println();
+		}
 	
 } // end utility method class
+
