@@ -1,3 +1,5 @@
+
+
 package caesarcipherencoder;
 
 public enum CipherType {
